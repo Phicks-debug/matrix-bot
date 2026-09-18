@@ -39,10 +39,8 @@ jobs:
       DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       MATRIX_BOT_TOKEN: ${{ secrets.MATRIX_BOT_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
       - run: bun install --frozen-lockfile
 
       - name: Check for credentials

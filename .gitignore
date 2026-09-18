@@ -25,8 +25,7 @@ logs
 .eslintcache
 *.tsbuildinfo
 
-# editors and OS
-.idea
-.DS_Store
-
+# editors, agents and OS
 .claude
+.DS_Store
+.idea
