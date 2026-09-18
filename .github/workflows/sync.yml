@@ -1,0 +1,75 @@
+name: sync
+
+# Placeholder. Nothing is wired up yet: without the repository secrets below the
+# sync step is skipped and the run stays green. Add the secrets to turn it on.
+#
+#   BROODS_API_KEY     runtime key from `broods login`
+#   DEEPSEEK_API_KEY   model key for the deepseek provider
+#   MATRIX_BOT_TOKEN   access token for the Matrix device
+#
+# Untested end to end. `broods dev --once` reads keys from .env.local, so the
+# job writes one from the secrets rather than exporting them.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "broods/**"
+      - "package.json"
+      - "bun.lock"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One sync at a time. Two overlapping runs would race on the same stage.
+concurrency:
+  group: sync-development
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    environment: development
+    env:
+      BROODS_PROJECT: matrix-bot
+      BROODS_STAGE: development
+      BROODS_REGION: eu-west-1
+      BROODS_API_KEY: ${{ secrets.BROODS_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      MATRIX_BOT_TOKEN: ${{ secrets.MATRIX_BOT_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+
+      - name: Check for credentials
+        id: creds
+        run: |
+          if [ -z "$BROODS_API_KEY" ]; then
+            echo "BROODS_API_KEY is not set; skipping sync."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Write .env.local
+        if: steps.creds.outputs.ready == 'true'
+        run: |
+          umask 077
+          {
+            printf 'BROODS_PROJECT="%s"\n' "$BROODS_PROJECT"
+            printf 'BROODS_STAGE="%s"\n' "$BROODS_STAGE"
+            printf 'BROODS_REGION="%s"\n' "$BROODS_REGION"
+            printf 'BROODS_API_KEY="%s"\n' "$BROODS_API_KEY"
+            printf 'DEEPSEEK_API_KEY="%s"\n' "$DEEPSEEK_API_KEY"
+            printf 'MATRIX_BOT_TOKEN="%s"\n' "$MATRIX_BOT_TOKEN"
+          } > .env.local
+
+      # Not `broods deploy`: it ignores BROODS_STAGE, targets Production, and
+      # never pushes env() values, so the connection would arrive tokenless.
+      - name: Sync development stage
+        if: steps.creds.outputs.ready == 'true'
+        run: bunx broods dev --once
