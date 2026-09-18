@@ -28,3 +28,5 @@ logs
 # editors and OS
 .idea
 .DS_Store
+
+.claude
