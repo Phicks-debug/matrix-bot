@@ -20,8 +20,9 @@ its sandbox and workspace, and the Matrix connection that names the room.
 ## Setup
 
 ```sh
-cp .env.example .env.local   # fill in the three keys
+cp .env.example .env.local   # fill in BROODS_API_KEY and DEEPSEEK_API_KEY
 bun install
+bun run login                # SSO in the browser, writes MATRIX_BOT_TOKEN
 bunx broods diff             # what would change
 bunx broods dev --once       # sync this stage, pushing MATRIX_BOT_TOKEN with it
 ```
@@ -58,9 +59,23 @@ not cross-signed, so it shows as unverified to others.
 
 ## Rotating the device
 
-Mint a device with any Matrix client signed in as the account, put its access
-token in `.env.local`, and redeploy. Delete the old device in the client's
-session list, or its keys sit on the account forever.
+```sh
+bun run login          # SSO in the browser, writes MATRIX_BOT_TOKEN
+bunx broods dev --once # push the new token to the stage
+```
+
+`bun run login` mints a device named `broods-matrix-forwarder` and rewrites the
+`MATRIX_BOT_TOKEN` line in `.env.local`. Nothing else in the file moves.
+
+Do not hand it Element's own access token instead. Two processes on one device
+id share that device's one-time keys, and whichever claims a key first leaves
+the other unable to decrypt.
+
+A Matrix access token does not expire on its own, but signing the device out in
+a client kills it on the spot. The forwarder stops the account on the first
+`M_UNKNOWN_TOKEN` rather than hammering the server, so Georgi goes quiet until
+a new token is synced. Old devices in the session list are safe to delete.
+`broods-matrix-forwarder` is not.
 
 Rotate whenever a token has been somewhere it should not be: a shared file, a
-paste, a screenshot. A Matrix access token does not expire on its own.
+paste, a screenshot.
