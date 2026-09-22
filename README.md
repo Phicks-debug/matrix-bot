@@ -41,9 +41,16 @@ connection is declared in code.
 
 ## The account is a person's, not a bot's
 
-The forwarder filters nothing. Every room the account is in is delivered and
-stored as context, and only `allowedChannelIds` decides where Georgi replies.
-Adding the account to a room shares that room's messages with Broods.
+The forwarder filters nothing. It POSTs every room the account is in to this
+agent's webhook, so every room's messages reach Broods core. Core is what
+filters, and it filters on arrival: a room outside `allowedChannelIds` is
+dropped and nothing from it is stored. In the allowed room the opposite holds.
+Every message is kept as context, and a `@georgi-ai` mention is what starts a
+run.
+
+So the allow list decides what Broods keeps, not what it receives. Adding the
+account to a room sends that room's messages to Broods whether or not Georgi
+ever answers there.
 
 Replies are sent from the account, so other members see its typing indicator,
 and clients without per-message profiles show "Georgi: " as text. The device is
