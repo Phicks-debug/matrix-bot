@@ -5,7 +5,7 @@
     "": {
       "name": "matrix-bot",
       "dependencies": {
-        "broods": "0.38.0",
+        "broods": "^0.40.1",
       },
       "devDependencies": {
         "@types/bun": "^1.4.2",
@@ -128,7 +128,7 @@
 
     "ai": ["ai@7.0.106", "", { "dependencies": { "@ai-sdk/gateway": "4.0.86", "@ai-sdk/provider": "4.0.17", "@ai-sdk/provider-utils": "5.0.44" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-0W9AlZfyhOlPyE9ZXCFisg0uxxrmQMGdoVUz0ewRg5J+xAhVBomSspktqYeGWABFbQrYyWRVibnvSf24pTeE2w=="],
 
-    "broods": ["broods@0.38.0", "", { "dependencies": { "@modelcontextprotocol/client": "^2.0.0", "esbuild": "^0.28.2" }, "peerDependencies": { "ai": "^7.0.99" }, "bin": { "broods": "dist/cli/index.js" } }, "sha512-sNlgM+lhxuBfYhq9WlNjAz2etoCgfdpKbjklTFOGaRh847stj7Fq7j91mgEB+gP+BSArgQleTlxpADEIM27fIw=="],
+    "broods": ["broods@0.40.1", "", { "dependencies": { "@modelcontextprotocol/client": "^2.0.0", "esbuild": "^0.28.2" }, "peerDependencies": { "ai": "^7.0.107" }, "bin": { "broods": "dist/cli/index.js" } }, "sha512-ZaOFTSvq5S/7U6CmMgUh6WIM+glKYiOmdgRuCocNYt93uKlWGKUMeU1a04Xh9cwW/ofYg8+sYTz7B8YiHWtu4A=="],
 
     "bun-types": ["bun-types@1.4.2", "", { "dependencies": { "@types/node": "*" } }, "sha512-bxV1FgK7yBIzjRe5zBozIM4Bem11ZJcCXSrjWRG3YWLt8yFDePu4cLjpebO8OvPeIE9trbyPF4fuj3Cia4Fj3w=="],
 

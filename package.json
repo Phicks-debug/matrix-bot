@@ -7,7 +7,7 @@
     "login": "bun run scripts/login.ts"
   },
   "dependencies": {
-    "broods": "0.38.0"
+    "broods": "^0.40.1"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2",

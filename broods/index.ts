@@ -43,6 +43,7 @@ export const georgiAgent = defineAgent({
   },
   agent: {
     system: readFileSync(`${import.meta.dirname}/INSTRUCTION.md`, "utf8").trim(),
+    maxTurn: -1,
   },
   connections: [matrixConnection],
   sandboxes: [lambdaSandbox],
